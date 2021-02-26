@@ -1,0 +1,45 @@
+
+                                        @foreach($comments as $comment)
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-gray-900">
+                                                            {{$comment->title}}
+                                                        </div>
+                                                        <div class="text-sm text-gray-500">
+                                                            {{json_decode(\App\Models\User::select('email')->where('id',$comment->user_id)->first(),true)['email']}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-wrap">
+                                                <div class="text-sm text-gray-500">{{$comment->text}}</div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-wrap">
+                                                <form method="get" action="{{ route('comments.subcomments.index', $comment) }}">
+                                                    <x-button class="ml-4">
+                                                        {{ __('Go to discussion') }}
+                                                    </x-button>
+                                                </form>
+                                            </td>
+                                            @if($comment->user_id==\Illuminate\Support\Facades\Auth::id())
+                                                <td class="px-6 py-4 whitespace-wrap">
+                                                    <form method="get" action="{{ route('quizzes.comments.edit',  ['quiz'=>$quiz, 'comment'=>$comment]) }}">
+                                                        <x-button class="ml-4">
+                                                            {{ __('Edit') }}
+                                                        </x-button>
+                                                    </form>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-wrap">
+                                                    <form method="post" action="{{ route('quizzes.comments.destroy',  ['quiz'=>$quiz, 'comment'=>$comment]) }}">
+                                                        @csrf
+                                                        @method("DELETE")
+                                                        <x-button class="ml-4">
+                                                            {{ __('Delete') }}
+                                                        </x-button>
+                                                </td>
+                                            @endif
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            </td>
+                                    </tr>
+                                    @endforeach
